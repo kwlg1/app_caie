@@ -3,13 +3,13 @@ import 'firebase/compat/auth';
 import 'firebase/compat/database'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCCkgdlRvZLGkkNJ6MjQe81L-2xhH6nrZI",
-    authDomain: "appcaie.firebaseapp.com",
-    projectId: "appcaie",
-    storageBucket: "appcaie.firebasestorage.app",
-    messagingSenderId: "767250192090",
-    appId: "1:767250192090:web:98b844def4d350cbde37e3",
-    measurementId: "G-FWNR6XWYX7"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SEND_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID 
   };
   
 

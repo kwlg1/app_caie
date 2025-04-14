@@ -183,7 +183,5 @@ const styles = StyleSheet.create({
   pickerStyles:{
     width: 290,
     color:'#349d22',
-    borderColor
-    
   }
 });

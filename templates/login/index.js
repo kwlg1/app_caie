@@ -1,14 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button, Image, Animated, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 import firebase from '../../config/firebase'
+
 
 export default function Login() {
 
     const logo = require('../../assets/logo.png')
     const AnimatedOpacity = useRef(new Animated.Value(0)).current
     const AnimatedFormBox = useRef(new Animated.Value(0)).current
+    const [users, setUsers] = useState([])
     const [Email, setEmail] = useState('')
     const [Password, setPassword] = useState('')
     const navigation = useNavigation();
@@ -42,14 +45,25 @@ export default function Login() {
         ).start()
     }, [])
 
-    async function ToDoLogin() {
-        await firebase.auth().signInWithEmailAndPassword(Email, Password)
-            .then(() => {
-
-            })
-            .catch((error) => {
-                Alert.alert('ERRO', 'Erro, verifique seus dados!')
-            })
+    function ToDoLogin() {
+        
+        axios.post('http://192.168.18.14:3000/login', {
+            email: Email,
+            senha: Password
+        })
+        .then(response => {
+            if (response.data.success) {
+                // Login bem-sucedido
+                navigation.navigate('Home', { user: response.data.user });
+                // Navegue para a tela principal, se desejar
+            } else {
+                Alert.alert('Erro', 'Email ou senha inválidos!');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            Alert.alert('Erro', 'Erro ao tentar logar!');
+        });
     }
 
     return (
@@ -108,7 +122,9 @@ export default function Login() {
 
         </View>
     );
+
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -161,4 +177,4 @@ const styles = StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 15
     }
-});
+})

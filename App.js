@@ -10,15 +10,15 @@ import Home from './templates/Home/index'
 export default function App() {
   const [user, setUser] = useState();
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
-    })
-  }, []);
+  // useEffect(() => {
+  //   firebase.auth().onAuthStateChanged((user) => {
+  //     setUser(user);
+  //   })
+  // }, []);
 
-  if(user){
-    return <Home></Home>
-  }
+  // if(user){
+  //   return <Home></Home>
+  // }
   
   return (
       <NavigationContainer>

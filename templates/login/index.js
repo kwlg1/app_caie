@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 import firebase from '../../config/firebase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Login() {
@@ -12,7 +13,7 @@ export default function Login() {
     const AnimatedOpacity = useRef(new Animated.Value(0)).current
     const AnimatedFormBox = useRef(new Animated.Value(0)).current
     const [users, setUsers] = useState([])
-    const [Email, setEmail] = useState('')
+    const [login, setLogin] = useState('')
     const [Password, setPassword] = useState('')
     const navigation = useNavigation();
 
@@ -45,15 +46,17 @@ export default function Login() {
         ).start()
     }, [])
 
-    function ToDoLogin() {
+    async function ToDoLogin() {
         
         axios.post('http://192.168.18.14:3000/login', {
-            email: Email,
+            nome: login,
+            email: login,
             senha: Password
         })
         .then(response => {
             if (response.data.success) {
                 // Login bem-sucedido
+                AsyncStorage.setItem('user', JSON.stringify(response.data.user));
                 navigation.navigate('Home', { user: response.data.user });
                 // Navegue para a tela principal, se desejar
             } else {
@@ -85,9 +88,9 @@ export default function Login() {
                 <TextInput
                     style={styles.Input}
                     placeholderTextColor='#349d22'
-                    placeholder='Endereço de email'
+                    placeholder='Nome ou Email'
                     autoCapitalize='none'
-                    onChangeText={(text) => setEmail(text)}
+                    onChangeText={(text) => setLogin(text)}
                 />
 
                 <TextInput

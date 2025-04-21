@@ -27,10 +27,10 @@ app.get('/users', async (req, res) => {
   }
 });
 
-app.post('/users', async (req, res) => {
-  const { name, email, senha } = req.body;
+app.post('/cadaster', async (req, res) => {
+  const { nome, email, senha, tipo_user } = req.body;
   try {
-    await pool.query('INSERT INTO users (nome, email, senha) VALUES ($1, $2)', [name, email, senha]);
+    await pool.query('INSERT INTO users (nome, email, senha, tipo_user) VALUES ($1, $2, $3, $4)', [nome, email, senha, tipo_user]);
     res.status(201).send('Usuário criado!');
   } catch (err) {
     res.status(500).send(err.message);
@@ -38,11 +38,11 @@ app.post('/users', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
+  const { nome, email, senha } = req.body;
   try {
     const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1 AND senha = $2',
-      [email, senha]
+      'SELECT * FROM users WHERE ( nome = $1 OR email = $2 ) AND senha = $3',
+      [nome, email, senha]
     );
     if (result.rows.length > 0) {
       res.json({ success: true, user: result.rows[0] });
@@ -53,6 +53,7 @@ app.post('/login', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

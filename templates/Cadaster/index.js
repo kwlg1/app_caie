@@ -1,24 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
 import { View, StatusBar, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, Animated, SubmitButton } from 'react-native';
 import firebase from '../../config/firebase'
-import {Picker} from "@react-native-picker/picker";
+import { Picker } from "@react-native-picker/picker";
+import axios from 'axios';
 
 export default function Cadaster() {
 
   const logo = require("../../assets/logo.png");
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
+  const [name, setName] = useState('')
   const [ConfirmPassword, setConfirmPassword] = useState('')
-  const [TypeUser, setTypeUser] = useState("")
+  const [tipo_user, setTipo_user] = useState("")
   const AnimatedOpacity = useRef(new Animated.Value(0)).current
   const AnimatedFormBox = useRef(new Animated.Value(0)).current
   const [selectedItem, setSelectedItem] = useState("")
-  const PickerRef = useRef( )
+  const PickerRef = useRef()
 
   useEffect(() => {
 
     Animated.decay(AnimatedFormBox, {
-      velocity: 0.7,
+      velocity: 1.2,
       deceleration: 0.998,
       useNativeDriver: false
     }).start()
@@ -48,12 +50,42 @@ export default function Cadaster() {
 
     if (Password === ConfirmPassword) {
 
-      await firebase.auth().createUserWithEmailAndPassword(Email, Password)
-        .catch((error) => {
-          Alert.alert('ERRO', `${error.message}`)
-        })
+      if (tipo_user !== "") {
 
-    } else {
+        if (name !== "") {
+
+          if (Email !== "") {
+
+            axios.post('http://192.168.18.14:3000/cadaster', {
+              nome: name,
+              email: Email,
+              senha: Password,
+              tipo_user: tipo_user
+
+            })
+              .then((response) => {
+                Alert.alert("CADASTRO", "Cadastro realizado com sucesso!")
+              })
+              .catch((error) => {
+                Alert.alert("ERRO", "Erro ao realizar o cadastro, confira seus dados.")
+                alert(error)
+              })
+
+          } else {
+            Alert.alert("EMAIL NÃO INFORMADO", "Por favor, insira seu email.")
+          }
+
+        }
+        else {
+          Alert.alert("NOME NÃO INFORMADO", "Por favor, insira seu nome.")
+        }
+
+      } else {
+        Alert.alert("TIPO DE USUÁRIO", "Selecione o tipo de usuário.")
+      }
+
+    }
+    else {
       Alert.alert("SENHAS DIVERGENTES", "As senhas não coincidem. Por favor, verifique as senhas.")
     }
 
@@ -78,16 +110,27 @@ export default function Cadaster() {
 
         <Picker
           ref={PickerRef}
-          selectedValue={TypeUser}
+          selectedValue={tipo_user}
           onValueChange={(itemValue) => {
-            setTypeUser(itemValue)
+            setTipo_user(itemValue)
           }}
+          defaultValue={"Selecione o tipo de usuário"}
+          mode='dropdown'
           style={styles.pickerStyles}
         >
-          <Picker.Item  label='Coordendor(a)' value={'Coordendor(a)'}/>
-          <Picker.Item  label='Professor(a)' value={'Professor(a)'}/>
-          <Picker.Item  label='Responsável' value={'Responsável'}/>
+           <Picker.Item label='Selecione o tipo de usuário' value='' enabled={false} />
+          <Picker.Item label='Coordenador(a)' value={'Coordenador(a)'} />
+          <Picker.Item label='Professor(a)' value={'Professor(a)'} />
+          <Picker.Item label='Responsável' value={'Responsável'} />
         </Picker>
+
+        <TextInput
+          style={styles.Input}
+          placeholderTextColor='#349d22'
+          placeholder='Usuario'
+          autoCapitalize='none'
+          onChangeText={(text) => setName(text)}
+        />
 
         <TextInput
           style={styles.Input}
@@ -145,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontWeight: 'bold',
-    marginBottom: 100
+    marginBottom: 50
   },
   Input: {
     borderColor: '#349d22',
@@ -180,8 +223,8 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15
   },
-  pickerStyles:{
+  pickerStyles: {
     width: 290,
-    color:'#349d22',
+    color: '#349d22',
   }
 });

@@ -1,6 +1,6 @@
 import react, { useEffect,useState } from 'react';
-import firebase from './config/firebase'
 import { NavigationContainer } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import RoutesLogin from './templates/routes/Login'
 import Home from './templates/Home/index'
@@ -8,22 +8,23 @@ import Home from './templates/Home/index'
 
 
 export default function App() {
-  const [user, setUser] = useState();
+  const [Logged, setLogged] = useState(null);
 
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     setUser(user);
-  //   })
-  // }, []);
+  useEffect(() => {
+    async function checkLogin() {
+      const user = await AsyncStorage.getItem('user');
+      setLogged(!!user);
+    }
+    checkLogin();
+  }, []);
 
-  // if(user){
-  //   return <Home></Home>
-  // }
-  
+  if (Logged === null) {
+    return null;
+  }
+
   return (
-      <NavigationContainer>
-        <RoutesLogin></RoutesLogin>
-      </NavigationContainer>
-  )
-
+    <NavigationContainer>
+      {Logged ? <Home /> : <RoutesLogin />}
+    </NavigationContainer>
+  );
 }

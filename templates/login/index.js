@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button, Image, Animated, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from 'react-native-vector-icons';
+
 import axios from 'axios';
-
-import firebase from '../../config/firebase'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 export default function Login() {
 
@@ -15,9 +14,9 @@ export default function Login() {
     const [users, setUsers] = useState([])
     const [login, setLogin] = useState('')
     const [Password, setPassword] = useState('')
+    const [hidePassowrd, setHidePassowrd] = useState(true)
     const navigation = useNavigation();
-
-    useEffect(() => {
+useEffect(() => {
 
         Animated.decay(AnimatedFormBox, {
             velocity: 0.7,
@@ -48,17 +47,15 @@ export default function Login() {
 
     async function ToDoLogin() {
         
-        axios.post('http://192.168.18.14:3000/login', {
+        axios.post(`http://192.168.203.89:3000/login`, {
             nome: login,
             email: login,
             senha: Password
         })
         .then(response => {
             if (response.data.success) {
-                // Login bem-sucedido
                 AsyncStorage.setItem('user', JSON.stringify(response.data.user));
                 navigation.navigate('Home', { user: response.data.user });
-                // Navegue para a tela principal, se desejar
             } else {
                 Alert.alert('Erro', 'Email ou senha inválidos!');
             }
@@ -98,8 +95,16 @@ export default function Login() {
                     placeholderTextColor='#349d22'
                     placeholder='Password'
                     autoCapitalize='none'
-                    secureTextEntry={true}
+                    secureTextEntry={hidePassowrd}
                     onChangeText={(text) => setPassword(text)}
+                />
+
+                <Feather 
+                    name={hidePassowrd? 'eye' : 'eye-off'} 
+                    size={24} 
+                    color='#349d22' 
+                    style={styles.hidePassowrd}
+                    onPress={() => setHidePassowrd(!hidePassowrd)}
                 />
 
                 <TouchableOpacity
@@ -153,6 +158,12 @@ const styles = StyleSheet.create({
         margin: 20,
         paddingLeft: 10,
         paddingRight: 10
+
+    },
+    hidePassowrd: {
+        position: 'absolute',
+        right: 30,
+        top: 123
 
     },
     Button: {

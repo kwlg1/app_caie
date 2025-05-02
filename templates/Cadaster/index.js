@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { View, StatusBar, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, Animated, SubmitButton } from 'react-native';
-import firebase from '../../config/firebase'
 import { Picker } from "@react-native-picker/picker";
 import axios from 'axios';
 
@@ -9,12 +8,12 @@ export default function Cadaster() {
   const logo = require("../../assets/logo.png");
   const [Email, setEmail] = useState('')
   const [Password, setPassword] = useState('')
+  const [hidePassowrd, setHidePassowrd] = useState(true)
   const [name, setName] = useState('')
   const [ConfirmPassword, setConfirmPassword] = useState('')
   const [tipo_user, setTipo_user] = useState("")
   const AnimatedOpacity = useRef(new Animated.Value(0)).current
   const AnimatedFormBox = useRef(new Animated.Value(0)).current
-  const [selectedItem, setSelectedItem] = useState("")
   const PickerRef = useRef()
 
   useEffect(() => {
@@ -56,7 +55,7 @@ export default function Cadaster() {
 
           if (Email !== "") {
 
-            axios.post('http://192.168.18.14:3000/cadaster', {
+            axios.post('http://192.168.203.89:3000/cadaster', {
               nome: name,
               email: Email,
               senha: Password,
@@ -127,7 +126,7 @@ export default function Cadaster() {
         <TextInput
           style={styles.Input}
           placeholderTextColor='#349d22'
-          placeholder='Usuario'
+          placeholder='Nome'
           autoCapitalize='none'
           onChangeText={(text) => setName(text)}
         />
@@ -135,7 +134,7 @@ export default function Cadaster() {
         <TextInput
           style={styles.Input}
           placeholderTextColor='#349d22'
-          placeholder='Endereço de de email'
+          placeholder='Endereço de email'
           autoCapitalize='none'
           onChangeText={(text) => setEmail(text)}
         />

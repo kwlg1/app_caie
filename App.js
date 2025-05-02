@@ -5,8 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RoutesLogin from './templates/routes/Login'
 import Home from './templates/Home/index'
 
-
-
 export default function App() {
   const [Logged, setLogged] = useState(null);
 
